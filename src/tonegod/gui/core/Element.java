@@ -1922,7 +1922,9 @@ public class Element extends Node {
 			setPosition(elementParent.getWidth()/2-(getWidth()/2),elementParent.getHeight()/2-(getHeight()/2));
 		}
 	}
-	
+	/**
+	 * Center to parent Vertical
+	 */
 	public void centerToParentV() {
 		if (elementParent == null) {
 			setPosition(getX(),screen.getHeight()/2-(getHeight()/2));
@@ -1930,7 +1932,9 @@ public class Element extends Node {
 			setPosition(getX(),elementParent.getHeight()/2-(getHeight()/2));
 		}
 	}
-	
+	/**
+	 * Center to parent Horizontal
+	 */
 	public void centerToParentH() {
 		if (elementParent == null) {
 			setPosition(screen.getWidth()/2-(getWidth()/2),getY());
@@ -1938,6 +1942,64 @@ public class Element extends Node {
 			setPosition(elementParent.getWidth()/2-(getWidth()/2),getY());
 		}
 	}
+	/**
+	 * Set in the right of another element, This overload is used also for a screen which takes only the uid as parameter
+	 */
+	public void setRightOf(String uid) {
+		if (elementParent == null) {
+			if(screen.getElementById(uid) != null) {
+				setPosition(screen.getElementById(uid).getWidth() + this.getWidth(), getY());
+			}
+		} else {
+			if(elementParent.getChildElementById(uid) != null) {
+				setPosition(elementParent.getChildElementById(uid).getWidth() + this.getWidth(), getY());
+			}
+		}
+	}
+	/**
+	 * Set in the left of another element, This overload is used also for a screen which takes only the uid as parameter
+	 */
+	public void setLeftOf(String uid) {
+		if (elementParent == null) {
+			if(screen.getElementById(uid) != null) {
+				setPosition(screen.getElementById(uid).getPosition().getX() - this.getWidth(), getY());
+			}
+		} else {
+			if(elementParent.getChildElementById(uid) != null) {
+				setPosition(elementParent.getChildElementById(uid).getX() - this.getWidth(), getY());
+			}
+		}
+	}
+	/**
+	 * Set in the top of another element, This overload is used also for a screen which takes only the uid as parameter
+	 */
+	public void setTopOf(String uid) {
+		if (elementParent == null) {
+			if(screen.getElementById(uid) != null) {
+				setPosition(this.getX(), screen.getElementById(uid).getY() - this.getWidth());
+			}
+		} else {
+			if(elementParent.getChildElementById(uid) != null) {
+				setPosition(this.getX(), elementParent.getChildElementById(uid).getY() - this.getWidth());
+			}
+		}
+	}
+	
+	/**
+	 * Set in the bottom of another element, This overload is used also for a screen which takes only the uid as parameter
+	 */
+	public void setBottomOf(String uid) {
+		if (elementParent == null) {
+			if(screen.getElementById(uid) != null) {
+				setPosition(this.getX(), screen.getElementById(uid).getWidth());
+			}
+		} else {
+			if(elementParent.getChildElementById(uid) != null) {
+				setPosition(this.getX(), elementParent.getChildElementById(uid).getY());
+			}
+		}
+	}
+	
 	//</editor-fold>
 	
 	//<editor-fold desc="Resze Borders">
