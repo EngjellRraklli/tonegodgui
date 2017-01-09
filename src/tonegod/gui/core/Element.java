@@ -1828,7 +1828,7 @@ public class Element extends Node {
 	/**
 	 * Sets the element relative to the parent.
 	 */
-	public void setPositionInParent(ElementPosition position) {
+	public void setGravity(ElementPosition position) {
 		if (elementParent == null) {
 			if(position == ElementPosition.CENTER) {
 				setPosition(screen.getWidth()/2-(getWidth()/2),screen.getHeight()/2-(getHeight()/2));
@@ -1948,11 +1948,11 @@ public class Element extends Node {
 	public void setRightOf(String uid) {
 		if (elementParent == null) {
 			if(screen.getElementById(uid) != null) {
-				setPosition(screen.getElementById(uid).getWidth() + this.getWidth(), getY());
+				setPosition(screen.getElementById(uid).getX() + screen.getElementById(uid).getWidth(), getY());
 			}
 		} else {
 			if(elementParent.getChildElementById(uid) != null) {
-				setPosition(elementParent.getChildElementById(uid).getWidth() + this.getWidth(), getY());
+				setPosition(elementParent.getChildElementById(uid).getX() + elementParent.getChildElementById(uid).getWidth(), getY());
 			}
 		}
 	}
@@ -1976,11 +1976,11 @@ public class Element extends Node {
 	public void setTopOf(String uid) {
 		if (elementParent == null) {
 			if(screen.getElementById(uid) != null) {
-				setPosition(this.getX(), screen.getElementById(uid).getY() - this.getWidth());
+				setPosition(this.getX(), screen.getElementById(uid).getY() - this.getHeight());
 			}
 		} else {
 			if(elementParent.getChildElementById(uid) != null) {
-				setPosition(this.getX(), elementParent.getChildElementById(uid).getY() - this.getWidth());
+				setPosition(this.getX(), elementParent.getChildElementById(uid).getY() + this.getHeight());
 			}
 		}
 	}
@@ -1991,11 +1991,12 @@ public class Element extends Node {
 	public void setBottomOf(String uid) {
 		if (elementParent == null) {
 			if(screen.getElementById(uid) != null) {
-				setPosition(this.getX(), screen.getElementById(uid).getWidth());
+				System.out.println("FOUND ELMENT setting to "+ (Math.round(screen.getElementById(uid).getAbsoluteY()) + Math.round(screen.getElementById(uid).getAbsoluteHeight())));
+				setPosition(this.getX(), Math.round(screen.getElementById(uid).getAbsoluteY()) + Math.round(screen.getElementById(uid).getAbsoluteHeight()));
 			}
 		} else {
 			if(elementParent.getChildElementById(uid) != null) {
-				setPosition(this.getX(), elementParent.getChildElementById(uid).getY());
+				setPosition(this.getX(), elementParent.getChildElementById(uid).getY() - elementParent.getChildElementById(uid).getHeight());
 			}
 		}
 	}
