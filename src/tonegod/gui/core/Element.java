@@ -29,6 +29,7 @@ import tonegod.gui.controls.extras.DragElement;
 import tonegod.gui.controls.form.Form;
 import tonegod.gui.core.layouts.Layout;
 import tonegod.gui.core.layouts.LayoutHints;
+import tonegod.gui.core.utils.BitmapTextUtil;
 import tonegod.gui.core.utils.UIDUtil;
 import tonegod.gui.effects.Effect;
 
@@ -209,6 +210,8 @@ public class Element extends Node {
 	protected Layout layout = null;
 	protected LayoutHints layoutHints = new LayoutHints();
 	//</editor-fold>
+	
+	protected boolean sizeToFit = false;
 	
 	/**
 	 * The Element class is the single primitive for all controls in the gui library.
@@ -1922,6 +1925,22 @@ public class Element extends Node {
 	public BitmapFont getFont() {
 		return this.font;
 	}
+	/**
+	 * When this param is on, whenever the user adds the text or the font
+	 * The labels size is changed automatically depending on the size of the
+	 * text. This makes dynamic calculations easier
+	 * @param sizeToFit
+	 */
+	public void setSizeToFit(boolean sizeToFit) {
+		this.sizeToFit = sizeToFit;
+	}
+	/**
+	 * Returns whether this label will fit the text or crop it.
+	 * @return boolean sizeToFit
+	 */
+	public boolean getSizeToFit() {
+		return this.sizeToFit;
+	}
 	
 	/**
 	 * Sets the element's text layer font size
@@ -1931,6 +1950,10 @@ public class Element extends Node {
 		this.fontSize = fontSize;
 		if (textElement != null) {
 			textElement.setSize(fontSize);
+			if(this.sizeToFit) {
+				this.setWidth(BitmapTextUtil.getTextWidth(this, textElement.getText()) + 10);
+				this.setHeight(BitmapTextUtil.getTextLineHeight(this, textElement.getText()));
+			}
 		}
 	}
 	
@@ -2095,7 +2118,9 @@ public class Element extends Node {
 	 */
 	public void setText(String text) {
 		this.text = text;
+		
 		if (textElement == null) {
+			System.out.println("GUI : Creating text element");
 			textElement = new BitmapText(font, false);
 			textElement.setBox(new Rectangle(0,0,dimensions.x,dimensions.y));
 		//	textElement = new TextElement(screen, Vector2f.ZERO, getDimensions());
@@ -2106,6 +2131,10 @@ public class Element extends Node {
 		textElement.setSize(fontSize);
 		textElement.setColor(fontColor);
 		textElement.setText(text);
+		if(this.sizeToFit) {
+			this.setWidth(BitmapTextUtil.getTextWidth(this, text));
+			this.setHeight(BitmapTextUtil.getTextLineHeight(this, text));
+		}
 		updateTextElement();
 		if (textElement.getParent() == null) {
 			this.attachChild(textElement);
