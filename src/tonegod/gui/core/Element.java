@@ -2132,7 +2132,7 @@ public class Element extends Node {
 		textElement.setColor(fontColor);
 		textElement.setText(text);
 		if(this.sizeToFit) {
-			this.setWidth(BitmapTextUtil.getTextWidth(this, text));
+			this.setWidth(BitmapTextUtil.getTextWidth(this, text) + 10);
 			this.setHeight(BitmapTextUtil.getTextLineHeight(this, text));
 		}
 		updateTextElement();
