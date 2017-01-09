@@ -5,11 +5,14 @@
 package tonegod.gui.controls.text;
 
 import com.jme3.font.BitmapFont;
+import com.jme3.font.BitmapText;
 import com.jme3.font.LineWrapMode;
+import com.jme3.font.Rectangle;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.ElementManager;
+import tonegod.gui.core.utils.BitmapTextUtil;
 import tonegod.gui.core.utils.UIDUtil;
 
 /**
@@ -17,6 +20,8 @@ import tonegod.gui.core.utils.UIDUtil;
  * @author t0neg0d
  */
 public class Label extends Element {
+	
+	protected boolean sizeToFit = false;
 	
 	/**
 	 * Creates a new instance of the Label control
@@ -100,5 +105,68 @@ public class Label extends Element {
 		this.setScaleEW(false);
 		this.setDocking(Docking.NW);
 	}
+	
+	/**
+	 * When this param is on, whenever the user adds the text or the font
+	 * The labels size is changed automatically depending on the size of the
+	 * text. This makes dynamic calculations easier
+	 * @param sizeToFit
+	 */
+	public void setSizeToFit(boolean sizeToFit) {
+		this.sizeToFit = sizeToFit;
+	}
+	/**
+	 * Returns whether this label will fit the text or crop it.
+	 * @return boolean sizeToFit
+	 */
+	public boolean getSizeToFit() {
+		return this.sizeToFit;
+	}
+	
+	/**
+	 * Sets the element's text layer font size
+	 * @param fontSize float The size to set the font to
+	 */
+	@Override
+	public void setFontSize(float fontSize) {
+		this.fontSize = fontSize;
+		if (textElement != null) {
+			textElement.setSize(fontSize);
+			if(this.sizeToFit) {
+				this.setWidth(BitmapTextUtil.getTextWidth(this, textElement.getText()) + 10);
+				this.setHeight(BitmapTextUtil.getTextLineHeight(this, textElement.getText()));
+			}
+		}
+	}
+	/**
+	 * Sets the text of the element.
+	 * @param text String The text to display.
+	 */
+	@Override
+	public void setText(String text) {
+		this.text = text;
+		
+		if (textElement == null) {
+			System.out.println("GUI : Creating text element");
+			textElement = new BitmapText(font, false);
+			textElement.setBox(new Rectangle(0,0,this.getDimensions().x,this.getDimensions().y));
+		//	textElement = new TextElement(screen, Vector2f.ZERO, getDimensions());
+		}
+		textElement.setLineWrapMode(textWrap);
+		textElement.setAlignment(textAlign);
+		textElement.setVerticalAlignment(textVAlign);
+		textElement.setSize(fontSize);
+		textElement.setColor(fontColor);
+		textElement.setText(text);
+		if(this.sizeToFit) {
+			this.setWidth(BitmapTextUtil.getTextWidth(this, text) + 10);
+			this.setHeight(BitmapTextUtil.getTextLineHeight(this, text));
+		}
+		updateTextElement();
+		if (textElement.getParent() == null) {
+			this.attachChild(textElement);
+		}
+	}
+	
 	
 }

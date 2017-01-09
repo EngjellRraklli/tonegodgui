@@ -97,6 +97,69 @@ public class Element extends Node {
 		 */
 		SE
 	}
+	/**
+	 * Defines where will the element sit on the parent
+	 */
+	public static enum ElementPosition {
+		/**
+		 * Positions to the center of parent
+		 */
+		CENTER,
+		/**
+		 * Positions to the right of parent
+		 */
+		RIGHT,
+		/**
+		 * Positions to the left of parent
+		 */
+		LEFT,
+		/**
+		 * Positions to the top right of parent
+		 */
+		TOP_RIGHT,
+		/**
+		 * Positions to the top left of parent
+		 */
+		TOP_LEFT,
+		/**
+		 * Positions to the bottom right of parent
+		 */
+		BOTTOM_RIGHT,
+		/**
+		 * Positions to the bottom left of parent
+		 */
+		BOTTOM_LEFT,
+		/**
+		 * Positions to the top center of parent
+		 */
+		TOP_CENTER,
+		/**
+		 * Positions to the bottom center of parent
+		 */
+		BOTTOM_CENTER
+	}
+	/**
+	 * Defines margin types
+	 */
+	public static enum ElementMargin {
+		/**
+		 * distances element from the top
+		 */
+		TOP,
+		/**
+		 * distances element from the right
+		 */
+		RIGHT,
+		/**
+		 * distances element from the left
+		 */
+		LEFT,
+		/**
+		 * distances element from the bottom
+		 */
+		BOTTOM
+		
+	}
 	
 	//<editor-fold desc="Fields">
 	protected Application app;
@@ -210,8 +273,6 @@ public class Element extends Node {
 	protected Layout layout = null;
 	protected LayoutHints layoutHints = new LayoutHints();
 	//</editor-fold>
-	
-	protected boolean sizeToFit = false;
 	
 	/**
 	 * The Element class is the single primitive for all controls in the gui library.
@@ -1765,6 +1826,93 @@ public class Element extends Node {
 	
 	//<editor-fold desc="Auto Centering">
 	/**
+	 * Sets the element relative to the parent.
+	 */
+	public void setPositionInParent(ElementPosition position) {
+		if (elementParent == null) {
+			if(position == ElementPosition.CENTER) {
+				setPosition(screen.getWidth()/2-(getWidth()/2),screen.getHeight()/2-(getHeight()/2));
+			} else if(position == ElementPosition.RIGHT) {
+				setPosition(screen.getWidth() - this.getWidth(),screen.getHeight()/2-(getHeight()/2));
+			} else if(position == ElementPosition.LEFT) {
+				setPosition(0, screen.getHeight()/2-(getHeight()/2));
+			} else if(position == ElementPosition.TOP_LEFT) {
+				setPosition(0, 0);
+			} else if(position == ElementPosition.BOTTOM_LEFT) {
+				setPosition(0, screen.getHeight() - this.getHeight());
+			} else if(position == ElementPosition.TOP_RIGHT) {
+				setPosition(screen.getWidth() - this.getWidth(), 0);
+			} else if(position == ElementPosition.BOTTOM_RIGHT) {
+				setPosition(screen.getWidth() - this.getWidth(), screen.getHeight() - this.getHeight());
+			} else if(position == ElementPosition.BOTTOM_CENTER) {
+				setPosition(screen.getWidth()/2-(getWidth()/2), screen.getHeight() - this.getHeight());
+			} else if(position == ElementPosition.TOP_CENTER) {
+				setPosition(screen.getWidth()/2-(getWidth()/2), 0);
+			}
+		} else {
+			if(position == ElementPosition.CENTER) {
+				setPosition(elementParent.getWidth()/2-(getWidth()/2),elementParent.getHeight()/2-(getHeight()/2));
+			} else if(position == ElementPosition.RIGHT) {
+				setPosition(elementParent.getWidth() - this.getWidth(),elementParent.getHeight()/2-(getHeight()/2));
+			} else if(position == ElementPosition.LEFT) {
+				setPosition(0, elementParent.getHeight()/2-(getHeight()/2));
+			} else if(position == ElementPosition.TOP_LEFT) {
+				setPosition(0, 0);
+			} else if(position == ElementPosition.BOTTOM_LEFT) {
+				setPosition(0, elementParent.getHeight() - this.getHeight());
+			} else if(position == ElementPosition.TOP_RIGHT) {
+				setPosition(elementParent.getWidth() - this.getWidth(), 0);
+			} else if(position == ElementPosition.BOTTOM_RIGHT) {
+				setPosition(elementParent.getWidth() - this.getWidth(), elementParent.getHeight() - this.getHeight());
+			} else if(position == ElementPosition.BOTTOM_CENTER) {
+				setPosition(elementParent.getWidth()/2-(getWidth()/2), elementParent.getHeight() - this.getHeight());
+			} else if(position == ElementPosition.TOP_CENTER) {
+				setPosition(elementParent.getWidth()/2-(getWidth()/2), 0);
+			}
+		}
+	}
+	/**
+	 * Sets the margins of the element which basically is the distance from elements sorrounding it;
+	 * @param marginLeft
+	 * @param marginRight
+	 * @param marginTop
+	 * @param marginBottom
+	 */
+	public void setMargin(float marginLeft, float marginRight, float marginTop, float marginBottom) {
+		this.setPosition(this.getPosition().x + marginLeft - marginRight, this.getPosition().y + marginTop - marginBottom);
+	}
+	
+	/**
+	 * Sets the margin left of the element
+	 * @param marginLeft
+	 */
+	public void setMarginLeft(float marginLeft) {
+		this.setPosition(this.getPosition().x + marginLeft, this.getPosition().y);
+	}
+	/**
+	 * Sets the margin right of the element
+	 * @param marginRight
+	 */
+	public void setMarginRight(float marginRight) {
+		this.setPosition(this.getPosition().x - marginRight, this.getPosition().y);
+	}
+	/**
+	 * Sets the margin top of the element
+	 * @param marginTop
+	 */
+	public void setMarginTop(float marginTop) {
+		this.setPosition(this.getPosition().x, this.getPosition().y + marginTop);
+	}
+	
+	/**
+	 * Sets the margin bottom of the element
+	 * @param marginBottom
+	 */
+	public void setMarginBottom(float marginBottom) {
+		this.setPosition(this.getPosition().x, this.getPosition().y - marginBottom);
+	}
+	
+	/**
 	 * Centers the Element to it's parent Element.  If the parent element is null, it will use the screen's width/height.
 	 */
 	public void centerToParent() {
@@ -1926,23 +2074,6 @@ public class Element extends Node {
 		return this.font;
 	}
 	/**
-	 * When this param is on, whenever the user adds the text or the font
-	 * The labels size is changed automatically depending on the size of the
-	 * text. This makes dynamic calculations easier
-	 * @param sizeToFit
-	 */
-	public void setSizeToFit(boolean sizeToFit) {
-		this.sizeToFit = sizeToFit;
-	}
-	/**
-	 * Returns whether this label will fit the text or crop it.
-	 * @return boolean sizeToFit
-	 */
-	public boolean getSizeToFit() {
-		return this.sizeToFit;
-	}
-	
-	/**
 	 * Sets the element's text layer font size
 	 * @param fontSize float The size to set the font to
 	 */
@@ -1950,10 +2081,6 @@ public class Element extends Node {
 		this.fontSize = fontSize;
 		if (textElement != null) {
 			textElement.setSize(fontSize);
-			if(this.sizeToFit) {
-				this.setWidth(BitmapTextUtil.getTextWidth(this, textElement.getText()) + 10);
-				this.setHeight(BitmapTextUtil.getTextLineHeight(this, textElement.getText()));
-			}
 		}
 	}
 	
@@ -2002,6 +2129,10 @@ public class Element extends Node {
 	 */
 	public BitmapFont.Align getTextAlign() {
 		return this.textAlign;
+	}
+	
+	public void setAlign() {
+		
 	}
 	
 	/**
@@ -2131,10 +2262,7 @@ public class Element extends Node {
 		textElement.setSize(fontSize);
 		textElement.setColor(fontColor);
 		textElement.setText(text);
-		if(this.sizeToFit) {
-			this.setWidth(BitmapTextUtil.getTextWidth(this, text) + 10);
-			this.setHeight(BitmapTextUtil.getTextLineHeight(this, text));
-		}
+		
 		updateTextElement();
 		if (textElement.getParent() == null) {
 			this.attachChild(textElement);
